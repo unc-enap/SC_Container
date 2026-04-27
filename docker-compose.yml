@@ -1,0 +1,41 @@
+services:
+  influxdb3-core:
+    image: influxdb:3-core
+    container_name: influxdb3-core
+    command: >
+      influxdb3 serve
+      --node-id=node0
+      --object-store=file
+      --data-dir=/var/lib/influxdb3
+      --http-bind=0.0.0.0:8181
+    ports:
+      - "0.0.0.0:80:8181"
+    volumes:
+      # DIRECT BIND: MacPath : ContainerPath
+      - /Volumes/data/InFluxDB_data:/var/lib/influxdb3
+    environment:
+      - INFLUXDB_INIT_OPERATOR_TOKEN=apiv3_ITYA3olmUbFbDytHAjgArTvr4dqteH5DtHVvJe0fPoB8Zg1iU6YdE7aN16Wc3h9KHzZWNeqbp1fkNyC0sIEspQ
+      - DEFAULT_API_TOKEN=apiv3_ITYA3olmUbFbDytHAjgArTvr4dqteH5DtHVvJe0fPoB8Zg1iU6YdE7aN16Wc3h9KHzZWNeqbp1fkNyC0sIEspQ
+    networks:
+      - influx-net
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - /Volumes/data/Grafana_data:/var/lib/grafana
+    networks:
+      - influx-net
+    depends_on:
+      - influxdb3-core
+    restart: unless-stopped
+
+networks:
+  influx-net:
+    driver: bridge
