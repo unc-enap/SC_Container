@@ -22,7 +22,8 @@ Running these services in Docker containers ensures consistent environments and 
 
 To stop the stack:
 ```bash
-docker compose down```
+docker compose down
+```
 
 ## Accessing the Services
 ### Grafana
